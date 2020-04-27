@@ -1,2 +1,2 @@
 # HeartDiseasePrediction
-Artificial Intelligence, EPFL
+Artificial Intelligence (CS330), EPFL
