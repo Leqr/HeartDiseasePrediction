@@ -71,7 +71,7 @@ class ResultValues():
 
         count=0
         for i in range(len(trueValues)):
-            if tureValues[i]=predValues[i]:
+            if tureValues[i]==predValues[i]:
                 count=+1
 
         precision = (count/len(trueValues))*100
