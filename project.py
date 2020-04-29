@@ -45,6 +45,7 @@ class ResultValues():
 
     def task1(self):
         donnees = self.importData('train_bin.csv')
+
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)
 
@@ -58,7 +59,7 @@ class ResultValues():
         trueValues=[]
         for donnee in donnees:
             for attribut, valeur in donnee[1].items():
-                if attribut="target":
+                if attribut=="target":
                     valeur=float(valeur)
                     trueValues.append(valeur)
 

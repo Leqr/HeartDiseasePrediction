@@ -21,6 +21,11 @@ class NoeudDeDecision:
 
         return self.enfants is None
 
+    def undefined(self):
+        """ Check if the node is undefined (means that no data has this combination of attributes). """
+
+        return self.donnees == []
+
     def classe(self):
         """ Si le noeud est terminal, retourne la classe des données qui\
             tombent dans la sous-classification (dans ce cas, toutes les\
@@ -52,8 +57,9 @@ class NoeudDeDecision:
         """ Représentation sous forme de string de l'arbre de décision duquel\
             le noeud courant est la racine.
         """
+
         rep = ''
-        if self.terminal():
+        if self.terminal() and not self.undefined():
             rep += '---'*level
             rep += 'Alors {}\n'.format(self.classe().upper())
             rep += '---'*level
@@ -62,12 +68,15 @@ class NoeudDeDecision:
                 rep += '---'*level
                 rep += str(donnee) + '\n'
 
+        elif self.undefined():
+            rep += '---'*level
+            rep += 'Alors undefined\n'
+
         else:
             for valeur, enfant in self.enfants.items():
                 rep += '---'*level
-                rep += 'Si {} = {}: \n'.format(self.attribut, str(valeur))
-                if type(enfant) is not type(None):
-                    rep += enfant.repr_arbre(level+1)
+                rep += 'Si {} = {}: \n'.format(self.attribut, str(valeur).upper())
+                rep += enfant.repr_arbre(level+1)
 
         return rep
 
