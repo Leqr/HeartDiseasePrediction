@@ -1,5 +1,5 @@
 from math import log
-from .noeud_de_decision import NoeudDeDecision
+from noeud_de_decision import NoeudDeDecision
 
 class ID3:
     """ Algorithme ID3. """
@@ -50,21 +50,20 @@ class ID3:
 
         else:
             #get the attribute minimizing the classifaction entropy
-            entropyAttribut = {}
-            for attribut,valeurs in attributs.items():
-                entropyAttribut.update({attribut: self.h_C_A(donnees,attribut,valeurs)})
-            bestAttribut = min(entropyAttribut, key=entropyAttribut.get)
+            entropyAttribut = [(self.h_C_A(donnees,attribut,attributs[attribut]), attribut) for attribut in attributs]
+            bestAttribut = min(entropyAttribut, key = lambda h: h[0])[1]
 
-            valeurs = attributs.pop(bestAttribut)
+            attributs_left =  attributs.copy()
+            del attributs_left[bestAttribut]
+
+
             child = {}
-            partitions = self.partitionne(donnees, bestAttribut, valeurs)
+            partitions = self.partitionne(donnees, bestAttribut, attributs[bestAttribut])
 
-            for v in valeurs:
-                child.update({v : self.construit_arbre_recur(partitions[v],attributs)})
+            for v,partition in partitions.items():
+                child[v] = self.construit_arbre_recur(partition,attributs_left)
+
             return NoeudDeDecision(bestAttribut,donnees,child)
-
-
-
 
 
     def partitionne(self, donnees, attribut, valeurs):
@@ -77,16 +76,11 @@ class ID3:
             l'attribut A une liste l_j contenant les données pour lesquelles A\
             vaut a_j.
         """
-        dic = {}
-        for val in valeurs:
-            dic.update({val:[]})
-
+        partitions = {valeur : [] for valeur in valeurs}
         for donnee in donnees:
-            a_j = donnee[1].pop(attribut)
-            l_j = dic[a_j]
-            l_j.append(donnee)
-            dic.update({a_j:l_j})
-        return dic
+            partition = partitions[donnee[1][attribut]]
+            partition.append(donnee)
+        return partitions
 
 
     def p_aj(self, donnees, attribut, valeur):

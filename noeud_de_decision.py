@@ -65,8 +65,9 @@ class NoeudDeDecision:
         else:
             for valeur, enfant in self.enfants.items():
                 rep += '---'*level
-                rep += 'Si {} = {}: \n'.format(self.attribut, valeur.upper())
-                rep += enfant.repr_arbre(level+1)
+                rep += 'Si {} = {}: \n'.format(self.attribut, str(valeur))
+                if type(enfant) is not type(None):
+                    rep += enfant.repr_arbre(level+1)
 
         return rep
 
@@ -74,4 +75,5 @@ class NoeudDeDecision:
         """ Représentation sous forme de string de l'arbre de décision duquel\
             le noeud courant est la racine.
         """
+
         return str(self.repr_arbre(level=0))

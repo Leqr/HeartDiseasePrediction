@@ -1,4 +1,5 @@
 import pandas as pd
+from id3 import ID3
 
 class ResultValues():
 
@@ -24,4 +25,28 @@ class ResultValues():
             :param file: .csv data file
             :return: the data ID3 ready
         """
+
+        #import data as a panda dataframe
         data = pd.read_csv(filename)
+
+        target = data.iloc[:,-1]
+
+        donnees = []
+        for i in range(len(target)):
+            if target.iloc[i] == 1 :
+                donnee = ['sick',{}]
+            elif target.iloc[i] == 0 :
+                donnee = ['not sick',{}]
+            for indexAttribut in range(len(data.iloc[i])-1):
+                donnee[1].update({data.columns[indexAttribut]:data.iloc[i,indexAttribut]})
+            donnees.append(donnee)
+
+        return donnees
+
+    def task1(self):
+        donnees = self.importData('train_bin.csv')
+        id3 = ID3()
+        self.arbre = id3.construit_arbre(donnees)
+
+        print('Arbre de décision :')
+        print(self.arbre)
