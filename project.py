@@ -5,8 +5,6 @@ class ResultValues():
 
     def __init__(self):
 
-        # Do computations here
-
         # Task 1
         self.arbre = None
         # Task 3
@@ -14,6 +12,11 @@ class ResultValues():
         self.regles = None
         # Task 5
         self.arbre_advance = None
+
+        # Task 1
+        self.task1()
+        #Task 2
+
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -43,14 +46,16 @@ class ResultValues():
 
         return donnees
 
-    def task1(self):
+    def task1(self,printTree = True):
         donnees = self.importData('train_bin.csv')
 
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)
 
-        print('Arbre de décision :')
-        print(self.arbre)
+        if printTree:
+            print('Arbre de décision :')
+            print(self.arbre)
+
 
     def precision(self,donnees):
         id3 = ID3()
