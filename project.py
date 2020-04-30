@@ -52,9 +52,9 @@ class ResultValues():
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)
 
-        if printTree:
-            print('Arbre de décision :')
-            print(self.arbre)
+        #if printTree:
+            #print('Arbre de décision :')
+            #print(self.arbre)
         return self.arbre
 
 
@@ -80,22 +80,23 @@ class ResultValues():
             if donnee[0]=='not sick':
                 trueValues.append(0)
 
-
         predValues=[]
         for donnee in donnees:
             classification = self.arbre.classifie(donnee[1])
             classe = self.only_class(classification)
+            #print(classe)
             if classe == 'sick':
                 predValues.append(1)
             if classe == 'not sick':
                 predValues.append(0)
-            if classe == 'u':
+            if classe == 'undefined':
                 predValues.append(-1)
 
         count=0
         for i in range(len(trueValues)):
             if trueValues[i]==predValues[i]:
-                count=+1
+                count+=1
+
 
         precision = (count/len(trueValues))*100
         return precision
