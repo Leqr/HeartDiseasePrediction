@@ -55,28 +55,45 @@ class ResultValues():
         if printTree:
             print('Arbre de décision :')
             print(self.arbre)
+        return self.arbre
 
+
+    def only_class(self,rep):
+        str='Alors'
+        sol = ''
+        if str in rep:
+            start=rep.find(str)+6
+            sol=rep[start:]
+        else:
+            sol = 'Not a class'
+        return sol
 
     def precision(self,donnees):
         id3 = ID3()
-        arbre = id3.construit_arbre(donnees)
+        self.arbre = id3.construit_arbre(donnees)
 
         trueValues=[]
         for donnee in donnees:
-            for attribut, valeur in donnee[1].items():
-                if attribut=="target":
-                    valeur=float(valeur)
-                    trueValues.append(valeur)
+            if donnee[0]=='sick':
+                trueValues.append(1)
+            if donnee[0]=='not sick':
+                trueValues.append(0)
+
 
         predValues=[]
         for donnee in donnees:
-            #faut changer classifie ou créer une nouvelle fonction qui s'inspire
-            #pour return seulement la classe et non tout le raisonnement
-            predValues.append(arbre.classifie(donne[1]))
+            classification = self.arbre.classifie(donnee[1])
+            classe = only_classe(self,classification)
+            if classe == 'sick':
+                predValues.append(1)
+            if classe == 'not sick':
+                predValues.apped(0)
+            if classe=='undefined':
+                predValues.append(-1)
 
         count=0
         for i in range(len(trueValues)):
-            if tureValues[i]==predValues[i]:
+            if trueValues[i]==predValues[i]:
                 count=+1
 
         precision = (count/len(trueValues))*100

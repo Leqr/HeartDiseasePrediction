@@ -36,7 +36,8 @@ class NoeudDeDecision:
             return self.donnees[0][0]
 
     def classifie(self, donnee):
-        """ Classifie une donnée à l'aide de l'arbre de décision duquel le noeud\
+        """
+         Classifie une donnée à l'aide de l'arbre de décision duquel le noeud\
             courant est la racine.
 
             :param donnee: la donnée à classifier.
@@ -45,11 +46,12 @@ class NoeudDeDecision:
 
         rep = ''
         if self.terminal():
-            rep += 'Alors {}'.format(self.classe().upper())
+            rep += 'Alors {}'.format(self.classe())
+            sol = self.classe().upper()
         else:
             valeur = donnee[self.attribut]
             enfant = self.enfants[valeur]
-            rep += 'Si {} = {}, '.format(self.attribut, valeur.upper())
+            rep += 'Si {} = {}, '.format(self.attribut, valeur)
             rep += enfant.classifie(donnee)
         return rep
 
