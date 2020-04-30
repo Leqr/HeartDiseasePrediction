@@ -66,6 +66,7 @@ class ResultValues():
             sol=rep[start:]
         else:
             sol = 'Not a class'
+
         return sol
 
     def precision(self,donnees):
@@ -83,12 +84,12 @@ class ResultValues():
         predValues=[]
         for donnee in donnees:
             classification = self.arbre.classifie(donnee[1])
-            classe = only_classe(self,classification)
+            classe = self.only_class(classification)
             if classe == 'sick':
                 predValues.append(1)
             if classe == 'not sick':
-                predValues.apped(0)
-            if classe=='undefined':
+                predValues.append(0)
+            if classe == 'u':
                 predValues.append(-1)
 
         count=0
