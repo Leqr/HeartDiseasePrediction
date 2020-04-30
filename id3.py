@@ -55,7 +55,7 @@ class ID3:
 
         if donnees == []:
             #This class means that no data fits this path of the tree (undefined)
-            return NoeudDeDecision(None, [])
+            return NoeudDeDecision(None, ['u'])
 
         # Si toutes les données restantes font partie de la même classe,
         # on peut retourner un noeud terminal.

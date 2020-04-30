@@ -32,8 +32,9 @@ class NoeudDeDecision:
             données font partie de la même classe.
         """
 
-        if self.terminal():
+        if self.terminal() :
             return self.donnees[0][0]
+
 
     def classifie(self, donnee):
         """
