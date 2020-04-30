@@ -16,7 +16,7 @@ class ResultValues():
         #Tasks are performed upon inililization
 
         # Task 1
-        self.task1(printTree = True)
+        self.task1(printTree = False)
         #Task 2
         self.task2(printPrecision = True)
         #Task3
@@ -73,7 +73,7 @@ class ResultValues():
         predValues=[]
         for donnee in donnees:
             classification = self.arbre.classifie(donnee[1])
-            print(classification)
+            #print(classification)
             classe = self.only_class(classification)
             #print(classe)
             if classe == 'sick':
@@ -95,19 +95,20 @@ class ResultValues():
     def task1(self,printTree = True):
         """ Performs task 1.
         """
-
+        print('Building the tree...')
         donnees = self.importData('train_bin.csv')
 
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)
 
         if printTree:
-            print('Arbre de décision :')
+            print('Decision tree :')
             print(self.arbre)
 
     def task2(self,printPrecision = True) :
         """ Performs task 2.
         """
+        print('Testing the tree...')
         precision = self.precision(self.importData("test_public_bin.csv"))
         if printPrecision:
-            print(precision)
+            print('Accuracy = ' + "{:5.2f}".format(precision) + '%')

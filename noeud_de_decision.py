@@ -48,7 +48,7 @@ class NoeudDeDecision:
         """
 
         rep = ''
-        if self.terminal() or self.undefined():
+        if self.terminal():
             rep += 'Alors {}'.format(self.classe())
             sol = self.classe().upper()
         else:
@@ -62,7 +62,9 @@ class NoeudDeDecision:
                 rep += 'Si {} = {}, '.format(self.attribut, valeur)
                 rep += enfant.classifie(donnee)
             else :
+                rep += 'Si {} = {}, '.format(self.attribut, valeur)
                 rep += 'Alors undefined'
+                
         return rep
 
     def repr_arbre(self, level=0):
