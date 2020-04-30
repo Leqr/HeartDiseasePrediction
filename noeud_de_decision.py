@@ -24,7 +24,7 @@ class NoeudDeDecision:
     def undefined(self):
         """ Check if the node is undefined (means that no data has this combination of attributes). """
 
-        return self.donnees == []
+        return self.donnees == ['u']
 
     def classe(self):
         """ Si le noeud est terminal, retourne la classe des données qui\
