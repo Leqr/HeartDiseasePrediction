@@ -24,7 +24,7 @@ class NoeudDeDecision:
     def undefined(self):
         """ Check if the node is undefined (means that no data has this combination of attributes). """
 
-        return self.donnees == ['u']
+        return len(self.donnees) == 1 and isinstance(self.donnees[0],str)
 
     def classe(self):
         """ Si le noeud est terminal, retourne la classe des données qui\
@@ -32,8 +32,10 @@ class NoeudDeDecision:
             données font partie de la même classe.
         """
 
-        if self.terminal() :
+        if self.terminal() and not self.undefined():
             return self.donnees[0][0]
+        elif self.undefined() :
+            return self.donnees[0]
 
 
     def classifie(self, donnee):
@@ -46,14 +48,21 @@ class NoeudDeDecision:
         """
 
         rep = ''
-        if self.terminal():
+        if self.terminal() or self.undefined():
             rep += 'Alors {}'.format(self.classe())
             sol = self.classe().upper()
         else:
+
             valeur = donnee[self.attribut]
-            enfant = self.enfants[valeur]
-            rep += 'Si {} = {}, '.format(self.attribut, valeur)
-            rep += enfant.classifie(donnee)
+
+            #this part takes into account the case where an attribute value from the
+            #test dataset doesn't exist in the training dataset.
+            if valeur in self.enfants.keys():
+                enfant = self.enfants[valeur]
+                rep += 'Si {} = {}, '.format(self.attribut, valeur)
+                rep += enfant.classifie(donnee)
+            else :
+                rep += 'Alors undefined'
         return rep
 
     def repr_arbre(self, level=0):
@@ -73,7 +82,9 @@ class NoeudDeDecision:
 
         elif self.undefined():
             rep += '---'*level
-            rep += 'Alors undefined\n'
+            rep += 'Alors {}\n'.format(self.classe().upper())
+            rep += '---'*level
+            rep += 'Décision basée sur la classe la plus représentée dans le noeud précédent.\n'
 
         else:
             for valeur, enfant in self.enfants.items():

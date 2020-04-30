@@ -13,9 +13,13 @@ class ResultValues():
         # Task 5
         self.arbre_advance = None
 
+        #Tasks are performed upon inililization
+
         # Task 1
-        self.task1()
+        self.task1(printTree = True)
         #Task 2
+        self.task2(printPrecision = True)
+        #Task3
 
 
     def get_results(self):
@@ -46,18 +50,6 @@ class ResultValues():
 
         return donnees
 
-    def task1(self,printTree = True):
-        donnees = self.importData('train_bin.csv')
-
-        id3 = ID3()
-        self.arbre = id3.construit_arbre(donnees)
-
-        #if printTree:
-            #print('Arbre de décision :')
-            #print(self.arbre)
-        return self.arbre
-
-
     def only_class(self,rep):
         str='Alors'
         sol = ''
@@ -70,8 +62,6 @@ class ResultValues():
         return sol
 
     def precision(self,donnees):
-        id3 = ID3()
-        self.arbre = id3.construit_arbre(donnees)
 
         trueValues=[]
         for donnee in donnees:
@@ -83,6 +73,7 @@ class ResultValues():
         predValues=[]
         for donnee in donnees:
             classification = self.arbre.classifie(donnee[1])
+            print(classification)
             classe = self.only_class(classification)
             #print(classe)
             if classe == 'sick':
@@ -100,3 +91,23 @@ class ResultValues():
 
         precision = (count/len(trueValues))*100
         return precision
+
+    def task1(self,printTree = True):
+        """ Performs task 1.
+        """
+
+        donnees = self.importData('train_bin.csv')
+
+        id3 = ID3()
+        self.arbre = id3.construit_arbre(donnees)
+
+        if printTree:
+            print('Arbre de décision :')
+            print(self.arbre)
+
+    def task2(self,printPrecision = True) :
+        """ Performs task 2.
+        """
+        precision = self.precision(self.importData("test_public_bin.csv"))
+        if printPrecision:
+            print(precision)

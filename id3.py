@@ -29,7 +29,7 @@ class ID3:
 
         return arbre
 
-    def construit_arbre_recur(self, donnees, attributs):
+    def construit_arbre_recur(self, donnees, attributs, avgClassPrevious = None):
         """ Construit rédurcivement un arbre de décision à partir
             des données d'apprentissage et d'un dictionnaire liant
             les attributs à la liste de leurs valeurs possibles.
@@ -38,6 +38,7 @@ class ID3:
             ``[classe, {attribut -> valeur}, ...]``.
             :param attributs: un dictionnaire qui associe chaque\
             attribut A à son domaine de valeurs a_j.
+            :param avgClassPrevious: Helps take solve the problem of unclassifiable leaves.
             :return: une instance de NoeudDeDecision correspondant à la racine de\
             l'arbre de décision.
         """
@@ -54,8 +55,9 @@ class ID3:
             return True
 
         if donnees == []:
-            #This class means that no data fits this path of the tree (undefined)
-            return NoeudDeDecision(None, ['u'])
+            #This class means that no data fits this path of the tree (undefined),
+            #the most represented class of the closest data in the tree is chosen
+            return NoeudDeDecision(None, [avgClassPrevious])
 
         # Si toutes les données restantes font partie de la même classe,
         # on peut retourner un noeud terminal.
@@ -75,10 +77,12 @@ class ID3:
 
             partitions = self.partitionne(donnees, attribut, attributs[attribut])
             enfants = {}
+
+            avgClassPrevious = max(set([donnee[0] for donnee in donnees]), key = [donnee[0] for donnee in donnees].count)
+
             for valeur, partition in partitions.items():
                 enfants[valeur] = self.construit_arbre_recur(partition,
-                                                             attributs_restants)
-
+                                                             attributs_restants,avgClassPrevious)
             return NoeudDeDecision(attribut, donnees, enfants)
 
     def partitionne(self, donnees, attribut, valeurs):
