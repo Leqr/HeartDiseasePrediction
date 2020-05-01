@@ -64,8 +64,33 @@ class NoeudDeDecision:
             else :
                 rep += 'Si {} = {}, '.format(self.attribut, valeur)
                 rep += 'Alors undefined'
-                
+
         return rep
+
+    def getDepth(self,level = 0, endLevels = []):
+        """
+        Return the mean and max depth of the tree, no parameters needed.
+
+            :return: A list with the mean depth and max depth.
+        """
+        maxi = 0
+        if self.terminal() or self.undefined():
+            endLevels.append(level)
+            maxi = level
+        else :
+            maxs = []
+
+            for valeur, enfant in self.enfants.items():
+                endLevels,maxi = enfant.getDepth(level+1,endLevels)
+                maxs.append(maxi)
+            maxi = max(maxs)
+
+        if level == 0:
+            meanLevel = sum(endLevels)/len(endLevels)
+            return [meanLevel,maxi]
+
+        return [endLevels,maxi]
+
 
     def repr_arbre(self, level=0):
         """ Représentation sous forme de string de l'arbre de décision duquel\

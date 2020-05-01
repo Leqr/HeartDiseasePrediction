@@ -16,6 +16,7 @@ class ID3:
         # Nous devons extraire les domaines de valeur des
         # attributs, puisqu'ils sont nécessaires pour
         # construire l'arbre.
+        depth = 0
         attributs = {}
         for donnee in donnees:
             for attribut, valeur in donnee[1].items():
@@ -26,7 +27,6 @@ class ID3:
                 valeurs.add(valeur)
 
         arbre = self.construit_arbre_recur(donnees, attributs)
-
         return arbre
 
     def construit_arbre_recur(self, donnees, attributs, avgClassPrevious = None):

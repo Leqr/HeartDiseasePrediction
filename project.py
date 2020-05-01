@@ -95,20 +95,24 @@ class ResultValues():
     def task1(self,printTree = True):
         """ Performs task 1.
         """
-        print('Building the tree...')
+        print('Building the tree (Task 1)...')
         donnees = self.importData('train_bin.csv')
 
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)
-
         if printTree:
             print('Decision tree :')
             print(self.arbre)
 
+        depthData = self.arbre.getDepth()
+        print('Average Depth : ' + "{:5.2f}".format(depthData[0]))
+        print('Maximum Depth : ' + "{:5.2f}".format(depthData[1]))
+        print()
+
     def task2(self,printPrecision = True) :
         """ Performs task 2.
         """
-        print('Testing the tree...')
+        print('Testing the tree (Task 2)...')
         precision = self.precision(self.importData("test_public_bin.csv"))
         if printPrecision:
             print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
