@@ -50,7 +50,6 @@ class NoeudDeDecision:
         rep = ''
         if self.terminal():
             rep += 'Alors {}'.format(self.classe())
-            sol = self.classe().upper()
         else:
 
             valeur = donnee[self.attribut]
