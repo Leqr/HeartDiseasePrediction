@@ -19,7 +19,7 @@ class ResultValues():
         # Task 1
         self.task1(printTree = True)
         #Task 2
-        self.task2(printPrecision = True)
+        self.task2(printPrecision = False)
         #Task3
         self.task3()
 
@@ -92,26 +92,59 @@ class ResultValues():
         precision = (count/len(trueValues))*100
         return precision
 
-    def generateRulesFromTree(self, tree, propositions):
-        #the rules will have the following form
-        # rule = [[[(att, value),...,(att, value)],res 1],...,[[(att, value),...,(att, value)],res m]]
+    def cure(self,donnees):
+        values_range=range(6)
+        found1=False
+        found2=False
+        before={}
+        treatments={}
 
-        for value, child in tree.enfants.items():
-            if child.terminal():
-                self.regles.append([propositions,child.classe()])
-            elif not (child.undefined() and child.terminal()):
-                propositions.append((tree.attribut,value))
-                self.generateRulesFromTree(child,propositions)
-                del propositions[-1]
+        for donnee in donnees:
+            if donnee[0]=='not sick':
+                print("No treatments needed")
+            elif donnee[0]=='sick':
+                attributs=list(donnee[1].keys())
+                #Checker si en changeant un seul attribut on peut guérir
+                for i in range(len(attributs)):
+                    if not attributs[i]=='age' and not attributs[i]=='sex':
+                        saved_data={attributs[i]:donnee[1][attributs[i]]}
+                        for value in values_range:
+                            donnee[1][attributs[i]]=value
+                            classe=self.only_class(self.arbre.classifie(donnee[1]))
+                            if classe=='not sick':
+                                found1=True
+                                treatments[attributs[i]]=value
+                                before[attributs[i]]=saved_data[attributs[i]]
+                                break
+                #Si on a pas trouvé de remède avec un seul attribut --> check avec\
+                # la combinaison de deux autres attributs. Mais trop de combinaison\
+                # sont essayées --> problème avec les break surement
+                if found1==False:
+                    for i in range(len(attributs)):
+                        if not attributs[i]=='age' and not attributs[i]=='sex':
+                            saved_data={attributs[i]:donnee[1][attributs[i]]}
+                            for value in values_range:
+                                donnee[1][attributs[i]]=value
+                                for j in range(i+1,len(attributs)):
+                                    if not attributs[j]=='age' and not attributs[j]=='sex':
+                                        saved_data={attributs[j]:donnee[1][attributs[j]]}
+                                        for val in values_range:
+                                            donnee[1][attributs[j]]=val
+                                            classe=self.only_class(self.arbre.classifie(donnee[1]))
+                                            if classe=='not sick':
+                                                found2=True
+                                                treatments[attributs[i]]=value
+                                                treatments[attributs[j]]=val
+                                                before[attributs[i]]=saved_data[attributs[i]]
+                                                before[attributs[j]]=saved_data[attributs[j]]
+                                                break
 
-    def task3(self):
-        pdb.set_trace()
-        self.regles = []
-        propositions = []
-        self.generateRulesFromTree(self.arbre,propositions)
-        for i in self.regles:
-            print(i)
-
+        if found1 or found2:
+            for x in treatments:
+                if before[x]!=treatments[x]:
+                    print('Cure: '+"{}".format(x)+": "+"{}-->{}".format(before[x],treatments[x]))
+        else:
+            print("No treatment founded")
 
     def task1(self,printTree = True):
         """ Performs task 1.
@@ -137,3 +170,5 @@ class ResultValues():
         precision = self.precision(self.importData("test_public_bin.csv"))
         if printPrecision:
             print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
+
+    
