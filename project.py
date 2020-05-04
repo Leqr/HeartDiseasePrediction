@@ -105,7 +105,7 @@ class ResultValues():
             elif donnee[0]=='sick':
                 attributs=list(donnee[1].keys())
                 for i in range(len(attributs)):
-                    if not attributs[i]=='age' or not attributs[i]=='sex':
+                    if not attributs[i]=='age' and not attributs[i]=='sex':
                         saved_data={attributs[i]:donnee[1][attributs[i]]}
                         for value in values_range:
                             donnee[1][attributs[i]]=value
@@ -117,12 +117,12 @@ class ResultValues():
                                 break
                 if found1==False:
                     for i in range(len(attributs)):
-                        if not attributs[i]=='age' or not attributs[i]=='sex':
+                        if not attributs[i]=='age' and not attributs[i]=='sex':
                             saved_data={attributs[i]:donnee[1][attributs[i]]}
                             for value in values_range:
                                 donnee[1][attributs[i]]=value
                                 for j in range(i+1,len(attributs)):
-                                    if not attributs[j]=='age' or not attributs[j]=='sex':
+                                    if not attributs[j]=='age' and not attributs[j]=='sex':
                                         saved_data={attributs[j]:donnee[1][attributs[j]]}
                                         for val in values_range:
                                             donnee[1][attributs[j]]=val
