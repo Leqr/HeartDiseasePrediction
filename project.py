@@ -18,7 +18,7 @@ class ResultValues():
         # Task 1
         self.task1(printTree = False)
         #Task 2
-        self.task2(printPrecision = True)
+        self.task2(printPrecision = False)
         #Task3
 
 
@@ -115,6 +115,7 @@ class ResultValues():
                                 treatments[attributs[i]]=value
                                 before[attributs[i]]=saved_data[attributs[i]]
                                 break
+
                 if found1==False:
                     for i in range(len(attributs)):
                         if not attributs[i]=='age' and not attributs[i]=='sex':
@@ -137,7 +138,8 @@ class ResultValues():
 
         if found1 or found2:
             for x in treatments:
-                print('Cure: '+"{}".format(x)+": "+"{}-->{}".format(before[x],treatments[x]))
+                if before[x]!=treatments[x]:
+                    print('Cure: '+"{}".format(x)+": "+"{}-->{}".format(before[x],treatments[x]))
         else:
             print("No treatment founded")
 
