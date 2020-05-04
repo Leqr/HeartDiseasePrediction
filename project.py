@@ -104,6 +104,7 @@ class ResultValues():
                 print("No treatments needed")
             elif donnee[0]=='sick':
                 attributs=list(donnee[1].keys())
+                #Checker si en changeant un seul attribut on peut guérir
                 for i in range(len(attributs)):
                     if not attributs[i]=='age' and not attributs[i]=='sex':
                         saved_data={attributs[i]:donnee[1][attributs[i]]}
@@ -115,7 +116,9 @@ class ResultValues():
                                 treatments[attributs[i]]=value
                                 before[attributs[i]]=saved_data[attributs[i]]
                                 break
-
+                #Si on a pas trouvé de remède avec un seul attribut --> check avec\
+                # la combinaison de deux autres attributs. Mais trop de combinaison\
+                # sont essayées --> problème avec les break surement
                 if found1==False:
                     for i in range(len(attributs)):
                         if not attributs[i]=='age' and not attributs[i]=='sex':
