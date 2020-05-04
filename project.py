@@ -92,6 +92,55 @@ class ResultValues():
         precision = (count/len(trueValues))*100
         return precision
 
+    def cure(self,donnees):
+        values_range=range(6)
+        found1=False
+        found2=False
+        before={}
+        treatments={}
+
+        for donnee in donnees:
+            if donnee[0]=='not sick':
+                print("No treatments needed")
+            elif donnee[0]=='sick':
+                attributs=list(donnee[1].keys())
+                for i in range(len(attributs)):
+                    if not attributs[i]=='age' or not attributs[i]=='sex':
+                        saved_data={attributs[i]:donnee[1][attributs[i]]}
+                        for value in values_range:
+                            donnee[1][attributs[i]]=value
+                            classe=self.only_class(self.arbre.classifie(donnee[1]))
+                            if classe=='not sick':
+                                found1=True
+                                treatments[attributs[i]]=value
+                                before[attributs[i]]=saved_data[attributs[i]]
+                                break
+                if found1==False:
+                    for i in range(len(attributs)):
+                        if not attributs[i]=='age' or not attributs[i]=='sex':
+                            saved_data={attributs[i]:donnee[1][attributs[i]]}
+                            for value in values_range:
+                                donnee[1][attributs[i]]=value
+                                for j in range(i+1,len(attributs)):
+                                    if not attributs[j]=='age' or not attributs[j]=='sex':
+                                        saved_data={attributs[j]:donnee[1][attributs[j]]}
+                                        for val in values_range:
+                                            donnee[1][attributs[j]]=val
+                                            classe=self.only_class(self.arbre.classifie(donnee[1]))
+                                            if classe=='not sick':
+                                                found2=True
+                                                treatments[attributs[i]]=value
+                                                treatments[attributs[j]]=val
+                                                before[attributs[i]]=saved_data[attributs[i]]
+                                                before[attributs[j]]=saved_data[attributs[j]]
+                                                break
+
+        if found1 or found2:
+            for x in treatments:
+                print('Cure: '+"{}".format(x)+": "+"{}-->{}".format(before[x],treatments[x]))
+        else:
+            print("No treatment founded")
+
     def task1(self,printTree = True):
         """ Performs task 1.
         """
