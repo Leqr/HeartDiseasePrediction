@@ -111,6 +111,7 @@ class ResultValues():
                     if not attributs[i]=='age' and not attributs[i]=='sex':
                         saved_data={attributs[i]:donnee[1][attributs[i]]}
                         values_range=self.attributs[attributs[i]]
+                        #print(attribut)
                         for value in values_range:
                             #print(value)
                             donnee[1][attributs[i]]=value
@@ -253,5 +254,5 @@ class ResultValues():
     def task4(self):
         """ Performs task 4.
         """
-        donnees=self.importData("test_cure.csv")
+        donnees=self.importData("train_bin.csv")
         self.cure(donnees)
