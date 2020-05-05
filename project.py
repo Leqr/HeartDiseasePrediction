@@ -136,13 +136,14 @@ class ResultValues():
                         before_cure2={}
                         if not attributs[i]=='age' and not attributs[i]=='sex':
                             saved_data={attributs[i]:donnee[1][attributs[i]]}
-                            values_range=self.attributs[attributs[i]]
-                            for value in values_range:
+                            values_range1=self.attributs[attributs[i]]
+                            for value in values_range1:
                                 donnee[1][attributs[i]]=value
                                 for j in range(i+1,len(attributs)):
                                     if not attributs[j]=='age' and not attributs[j]=='sex':
                                         saved_data={attributs[j]:donnee[1][attributs[j]]}
-                                        for val in values_range:
+                                        values_range2=self.attributs[attributs[j]]
+                                        for val in values_range2:
                                             donnee[1][attributs[j]]=val
                                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                                             if classe=='not sick':
@@ -160,8 +161,6 @@ class ResultValues():
                                     break
                             if found2:
                                 break
-                        if found2:
-                            break
 
 
         if found1 or found2:
