@@ -42,7 +42,6 @@ class ID3:
         # print(predominant_class)
 
         arbre = self.construit_arbre_recur(donnees, attributs, predominant_class)
-
         return arbre
 
     def construit_arbre_recur(self, donnees, attributs, predominant_class):
@@ -70,7 +69,7 @@ class ID3:
             return True
 
         if donnees == []:
-            
+
             return NoeudDeDecision(None, [str(predominant_class), dict()], str(predominant_class))
 
         # Si toutes les données restantes font partie de la même classe,

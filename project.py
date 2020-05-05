@@ -81,8 +81,6 @@ class ResultValues():
                 predValues.append(1)
             if classe == 'not sick':
                 predValues.append(0)
-            if classe == 'undefined':
-                predValues.append(-1)
 
         count=0
         for i in range(len(trueValues)):
@@ -189,7 +187,7 @@ class ResultValues():
         """
         print('Building the tree (Task 1)...')
         donnees = self.importData('train_bin.csv')
-
+        
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)
         if printTree:
