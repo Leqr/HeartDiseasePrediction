@@ -1,6 +1,5 @@
 import pandas as pd
 from id3 import ID3
-import pdb
 
 class ResultValues():
 
@@ -21,9 +20,9 @@ class ResultValues():
         #Task 2
         self.task2(printPrecision = True)
         #Task3
-        #self.task3()
+        self.task3(printRules = True)
         #Task4
-        self.task4()
+        #self.task4()
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -148,21 +147,19 @@ class ResultValues():
         else:
             print("No treatment founded")
 
-    def generateRulesFromTree(self, tree, propositions):
+    def DFSgenerateRulesFromTree(self, tree, propositions):
         #the rules will have the following form
         # rule = [[[(att, value),...,(att, value)],res 1],...,[[(att, value),...,(att, value)],res m]]
-        pdb.set_trace()
-
         for value, child in tree.enfants.items():
             if child.terminal():
-                newProp = propositions
+                newProp = propositions.copy()
                 newProp.append((tree.attribut,value))
                 self.regles.append([newProp,child.classe()])
-                print(self.regles)
             elif not (child.undefined() and child.terminal()):
-                propositions.append((tree.attribut,value))
-                print(propositions)
-                self.generateRulesFromTree(child,propositions)
+                newProp2 = propositions.copy()
+                newProp2.append((tree.attribut,value))
+                self.DFSgenerateRulesFromTree(child,newProp2)
+
 
     def task1(self,printTree = True):
         """ Performs task 1.
@@ -189,13 +186,21 @@ class ResultValues():
         if printPrecision:
             print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
 
-    def task3(self):
+        print()
+
+    def task3(self,printRules = True):
+        """ Performs task 3.
+        """
+        print('Generating rules from the tree (Task 3)...')
+
         self.regles = []
         propositions = []
-        self.generateRulesFromTree(self.arbre,propositions)
+        self.DFSgenerateRulesFromTree(self.arbre,propositions)
         for i in self.regles:
             print(i)
 
     def task4(self):
+        """ Performs task 4.
+        """
         donnees=self.importData("test_cure.csv")
         self.cure(donnees)
