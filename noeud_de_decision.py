@@ -66,7 +66,7 @@ class NoeudDeDecision:
                 rep += enfant.classifie(donnee)
             else :
                 rep += 'Si {} = {}, '.format(self.attribut, valeur)
-                rep += 'Alors undefined' #+ self.p_class 
+                rep += 'Alors undefined' #+ self.p_class
 
         return rep
 

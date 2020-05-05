@@ -12,7 +12,7 @@ class ResultValues():
         self.regles = None
         # Task 5
         self.arbre_advance = None
-
+        self.attributs = None
         #Tasks are performed upon inililization
 
         # Task 1
@@ -94,36 +94,48 @@ class ResultValues():
         return precision
 
     def cure(self,donnees):
-        values_range=range(6)
-        found1=False
         found2=False
-        before={}
-        treatments={}
+        before=[]
+        treatments=[]
 
         for donnee in donnees:
+            found1=False
             if donnee[0]=='not sick':
                 print("No treatments needed")
             elif donnee[0]=='sick':
                 attributs=list(donnee[1].keys())
                 #Checker si en changeant un seul attribut on peut guérir
                 for i in range(len(attributs)):
+                    cure1={}
+                    before_cure1={}
                     if not attributs[i]=='age' and not attributs[i]=='sex':
                         saved_data={attributs[i]:donnee[1][attributs[i]]}
+                        values_range=self.attributs[attributs[i]]
                         for value in values_range:
+                            #print(value)
                             donnee[1][attributs[i]]=value
                             classe=self.only_class(self.arbre.classifie(donnee[1]))
+                            #print(classe)
                             if classe=='not sick':
                                 found1=True
-                                treatments[attributs[i]]=value
-                                before[attributs[i]]=saved_data[attributs[i]]
+                                cure1[attributs[i]]=value
+                                treatments.append(cure1)
+                                before_cure1[attributs[i]]=saved_data[attributs[i]]
+                                before.append(before_cure1)
                                 break
+                    if found1:
+                        break
                 #Si on a pas trouvé de remède avec un seul attribut --> check avec\
                 # la combinaison de deux autres attributs. Mais trop de combinaison\
                 # sont essayées --> problème avec les break surement
                 if found1==False:
+                    found2=False
                     for i in range(len(attributs)):
+                        cure2={}
+                        before_cure2={}
                         if not attributs[i]=='age' and not attributs[i]=='sex':
                             saved_data={attributs[i]:donnee[1][attributs[i]]}
+                            values_range=self.attributs[attributs[i]]
                             for value in values_range:
                                 donnee[1][attributs[i]]=value
                                 for j in range(i+1,len(attributs)):
@@ -134,16 +146,30 @@ class ResultValues():
                                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                                             if classe=='not sick':
                                                 found2=True
-                                                treatments[attributs[i]]=value
-                                                treatments[attributs[j]]=val
-                                                before[attributs[i]]=saved_data[attributs[i]]
-                                                before[attributs[j]]=saved_data[attributs[j]]
+                                                cure2[attributs[i]]=value
+                                                cure2[attributs[j]]=val
+                                                treatments.append(cure2)
+                                                before_cure2[attributs[i]]=saved_data[attributs[i]]
+                                                before_cure2[attributs[j]]=saved_data[attributs[j]]
+                                                before.append(before_cure2)
                                                 break
+                                    if found2:
+                                        break
+                                if found2:
+                                    break
+                            if found2:
+                                break
+                        if found2:
+                            break
+
 
         if found1 or found2:
-            for x in treatments:
-                if before[x]!=treatments[x]:
-                    print('Cure: '+"{}".format(x)+": "+"{}-->{}".format(before[x],treatments[x]))
+            for i in range(len(treatments)):
+                list_attributs=list(treatments[i].keys())
+                for j in range(len(list_attributs)):
+                    i_str=str(i)
+                    print(i_str+': Cure: '+"{}".format(list_attributs[j])+": "+"{}-->{}".format
+                        (before[i][list_attributs[j]],treatments[i][list_attributs[j]]))
         else:
             print("No treatment founded")
 
@@ -191,7 +217,8 @@ class ResultValues():
         donnees = self.importData('train_bin.csv')
 
         id3 = ID3()
-        self.arbre = id3.construit_arbre(donnees)
+        self.arbre = id3.construit_arbre(donnees)[0]
+        self.attributs = id3.construit_arbre(donnees)[1]
         if printTree:
             print('Decision tree :')
             print(self.arbre)
