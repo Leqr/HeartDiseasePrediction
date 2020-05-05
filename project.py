@@ -16,11 +16,11 @@ class ResultValues():
         #Tasks are performed upon inililization
 
         # Task 1
-        self.task1(printTree = True)
+        self.task1(printTree = False)
         #Task 2
         self.task2(printPrecision = True)
         #Task3
-        self.task3(printRules = True)
+        self.task3(printRules = False)
         #Task4
         self.task4()
 
@@ -213,7 +213,7 @@ class ResultValues():
         """
         print('Building the tree (Task 1)...')
         donnees = self.importData('train_bin.csv')
-        
+
         id3 = ID3()
         self.arbre = id3.construit_arbre(donnees)[0]
         self.attributs = id3.construit_arbre(donnees)[1]
@@ -244,12 +244,17 @@ class ResultValues():
         self.regles = []
         propositions = []
         self.DFSgenerateRulesFromTree(self.arbre,propositions)
-        for i in self.regles:
-            print(i)
+        if printRules:
+            for i in self.regles:
+                print(i)
         print()
 
     def task4(self):
         """ Performs task 4.
         """
+        print('Finding cures (Task 4)...')
+
         donnees=self.importData("train_bin.csv")
         self.cure(donnees)
+
+        print()
