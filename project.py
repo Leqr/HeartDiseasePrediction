@@ -22,7 +22,7 @@ class ResultValues():
         #Task3
         self.task3(printRules = True)
         #Task4
-        #self.task4()
+        self.task4()
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -148,6 +148,13 @@ class ResultValues():
             print("No treatment founded")
 
     def DFSgenerateRulesFromTree(self, tree, propositions):
+
+        """ DFS over all the tree to generate a set of rules.
+
+            :param tree: useful for the recursive algorithm
+            :param propositions: useful for the recursive algorithm
+
+        """
         #the rules will have the following form
         # rule = [[[(att, value),...,(att, value)],res 1],...,[[(att, value),...,(att, value)],res m]]
         for value, child in tree.enfants.items():
@@ -159,6 +166,22 @@ class ResultValues():
                 newProp2 = propositions.copy()
                 newProp2.append((tree.attribut,value))
                 self.DFSgenerateRulesFromTree(child,newProp2)
+
+
+    def explanationForDiagnostic(self,donnee):
+        """ Give an explanation of the diagnostic using the parameters of the data.
+
+            :param donnee: a data to analyze
+
+            :return:
+
+        """
+
+
+
+
+
+
 
 
     def task1(self,printTree = True):
@@ -198,6 +221,7 @@ class ResultValues():
         self.DFSgenerateRulesFromTree(self.arbre,propositions)
         for i in self.regles:
             print(i)
+        print()
 
     def task4(self):
         """ Performs task 4.
