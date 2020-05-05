@@ -42,7 +42,8 @@ class ID3:
         # print(predominant_class)
 
         arbre = self.construit_arbre_recur(donnees, attributs, predominant_class)
-        return arbre
+
+        return arbre, attributs
 
     def construit_arbre_recur(self, donnees, attributs, predominant_class):
         """ Construit rédurcivement un arbre de décision à partir
