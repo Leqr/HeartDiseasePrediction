@@ -1,7 +1,11 @@
 class NoeudDeDecision:
-    """Un noeud dans un arbre de décision. """
+    """ Un noeud dans un arbre de décision.
 
-    def __init__(self, attribut, donnees, enfants=None):
+        This is an updated version from the one in the book (Intelligence Artificielle par la pratique).
+        Specifically, if we can not classify a data point, we return the predominant class (see lines 53 - 56).
+    """
+
+    def __init__(self, attribut, donnees, p_class, enfants=None):
         """
             :param attribut: l'attribut de partitionnement du noeud (``None`` si\
             le noeud est un noeud terminal).
@@ -15,6 +19,7 @@ class NoeudDeDecision:
         self.attribut = attribut
         self.donnees = donnees
         self.enfants = enfants
+        self.p_class = p_class
 
     def terminal(self):
         """ Vérifie si le noeud courant est terminal. """
@@ -24,7 +29,7 @@ class NoeudDeDecision:
     def undefined(self):
         """ Check if the node is undefined (means that no data has this combination of attributes). """
 
-        return len(self.donnees) == 1 and isinstance(self.donnees[0],str)
+        return isinstance(self.donnees[0], str)
 
     def classe(self):
         """ Si le noeud est terminal, retourne la classe des données qui\
@@ -36,7 +41,6 @@ class NoeudDeDecision:
             return self.donnees[0][0]
         elif self.undefined() :
             return self.donnees[0]
-
 
     def classifie(self, donnee):
         """
@@ -66,31 +70,6 @@ class NoeudDeDecision:
 
         return rep
 
-    def getDepth(self,level = 0, endLevels = []):
-        """
-        Return the mean and max depth of the tree, no parameters needed.
-
-            :return: A list with the mean depth and max depth.
-        """
-        maxi = 0
-        if self.terminal() or self.undefined():
-            endLevels.append(level)
-            maxi = level
-        else :
-            maxs = []
-
-            for valeur, enfant in self.enfants.items():
-                endLevels,maxi = enfant.getDepth(level+1,endLevels)
-                maxs.append(maxi)
-            maxi = max(maxs)
-
-        if level == 0:
-            meanLevel = sum(endLevels)/len(endLevels)
-            return [meanLevel,maxi]
-
-        return [endLevels,maxi]
-
-
     def repr_arbre(self, level=0):
         """ Représentation sous forme de string de l'arbre de décision duquel\
             le noeud courant est la racine.
@@ -119,6 +98,30 @@ class NoeudDeDecision:
                 rep += enfant.repr_arbre(level+1)
 
         return rep
+
+    def getDepth(self,level = 0, endLevels = []):
+        """
+        Return the mean and max depth of the tree, no parameters needed.
+
+            :return: A list with the mean depth and max depth.
+        """
+        maxi = 0
+        if self.terminal() or self.undefined():
+            endLevels.append(level)
+            maxi = level
+        else :
+            maxs = []
+
+            for valeur, enfant in self.enfants.items():
+                endLevels,maxi = enfant.getDepth(level+1,endLevels)
+                maxs.append(maxi)
+            maxi = max(maxs)
+
+        if level == 0:
+            meanLevel = sum(endLevels)/len(endLevels)
+            return [meanLevel,maxi]
+
+        return [endLevels,maxi]
 
     def __repr__(self):
         """ Représentation sous forme de string de l'arbre de décision duquel\

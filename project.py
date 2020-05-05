@@ -19,9 +19,11 @@ class ResultValues():
         # Task 1
         self.task1(printTree = True)
         #Task 2
-        self.task2(printPrecision = False)
+        self.task2(printPrecision = True)
         #Task3
         #self.task3()
+        #Task4
+        self.task4()
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -146,6 +148,22 @@ class ResultValues():
         else:
             print("No treatment founded")
 
+    def generateRulesFromTree(self, tree, propositions):
+        #the rules will have the following form
+        # rule = [[[(att, value),...,(att, value)],res 1],...,[[(att, value),...,(att, value)],res m]]
+        pdb.set_trace()
+
+        for value, child in tree.enfants.items():
+            if child.terminal():
+                newProp = propositions
+                newProp.append((tree.attribut,value))
+                self.regles.append([newProp,child.classe()])
+                print(self.regles)
+            elif not (child.undefined() and child.terminal()):
+                propositions.append((tree.attribut,value))
+                print(propositions)
+                self.generateRulesFromTree(child,propositions)
+
     def task1(self,printTree = True):
         """ Performs task 1.
         """
@@ -170,22 +188,14 @@ class ResultValues():
         precision = self.precision(self.importData("test_public_bin.csv"))
         if printPrecision:
             print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
-    def generateRulesFromTree(self, tree, propositions):
-        #the rules will have the following form
-        # rule = [[[(att, value),...,(att, value)],res 1],...,[[(att, value),...,(att, value)],res m]]
-
-        for value, child in tree.enfants.items():
-            if child.terminal():
-                self.regles.append([propositions,child.classe()])
-            elif not (child.undefined() and child.terminal()):
-                propositions.append((tree.attribut,value))
-                self.generateRulesFromTree(child,propositions)
-                del propositions[-1]
 
     def task3(self):
-        pdb.set_trace()
         self.regles = []
         propositions = []
         self.generateRulesFromTree(self.arbre,propositions)
         for i in self.regles:
             print(i)
+
+    def task4(self):
+        donnees=self.importData("test_cure.csv")
+        self.cure(donnees)

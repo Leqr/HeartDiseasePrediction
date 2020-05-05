@@ -2,7 +2,12 @@ from math import log
 from noeud_de_decision import NoeudDeDecision
 
 class ID3:
-    """ Algorithme ID3. """
+    """ Algorithme ID3.
+
+        This is an updated version from the one in the book (Intelligence Artificielle par la pratique).
+        Specifically, in construit_arbre_recur(), if donnees == [] (line 70), it returns a terminal node with the predominant class of the dataset -- as computed in construit_arbre() -- instead of returning None.
+        Moreover, the predominant class is also passed as a parameter to NoeudDeDecision().
+    """
 
     def construit_arbre(self, donnees):
         """ Construit un arbre de décision à partir des données d'apprentissage.
@@ -16,7 +21,6 @@ class ID3:
         # Nous devons extraire les domaines de valeur des
         # attributs, puisqu'ils sont nécessaires pour
         # construire l'arbre.
-        depth = 0
         attributs = {}
         for donnee in donnees:
             for attribut, valeur in donnee[1].items():
@@ -26,10 +30,22 @@ class ID3:
                     attributs[attribut] = valeurs
                 valeurs.add(valeur)
 
-        arbre = self.construit_arbre_recur(donnees, attributs)
+        # Find the predominant class
+        classes = set([row[0] for row in donnees])
+        # print(classes)
+        predominant_class_counter = -1
+        for c in classes:
+            # print([row[0] for row in donnees].count(c))
+            if [row[0] for row in donnees].count(c) >= predominant_class_counter:
+                predominant_class_counter = [row[0] for row in donnees].count(c)
+                predominant_class = c
+        # print(predominant_class)
+
+        arbre = self.construit_arbre_recur(donnees, attributs, predominant_class)
+
         return arbre
 
-    def construit_arbre_recur(self, donnees, attributs, avgClassPrevious = None):
+    def construit_arbre_recur(self, donnees, attributs, predominant_class):
         """ Construit rédurcivement un arbre de décision à partir
             des données d'apprentissage et d'un dictionnaire liant
             les attributs à la liste de leurs valeurs possibles.
@@ -38,7 +54,6 @@ class ID3:
             ``[classe, {attribut -> valeur}, ...]``.
             :param attributs: un dictionnaire qui associe chaque\
             attribut A à son domaine de valeurs a_j.
-            :param avgClassPrevious: Helps take solve the problem of unclassifiable leaves.
             :return: une instance de NoeudDeDecision correspondant à la racine de\
             l'arbre de décision.
         """
@@ -55,14 +70,14 @@ class ID3:
             return True
 
         if donnees == []:
-            #This class means that no data fits this path of the tree (undefined),
-            #the most represented class of the closest data in the tree is chosen
-            return NoeudDeDecision(None, [avgClassPrevious])
+            
+            return NoeudDeDecision(None, [str(predominant_class), dict()], str(predominant_class))
 
         # Si toutes les données restantes font partie de la même classe,
         # on peut retourner un noeud terminal.
         elif classe_unique(donnees):
-            return NoeudDeDecision(None, donnees)
+
+            return NoeudDeDecision(None, donnees, str(predominant_class))
 
         else:
             # Sélectionne l'attribut qui réduit au maximum l'entropie.
@@ -76,14 +91,14 @@ class ID3:
             del attributs_restants[attribut]
 
             partitions = self.partitionne(donnees, attribut, attributs[attribut])
+
             enfants = {}
-
-            avgClassPrevious = max(set([donnee[0] for donnee in donnees]), key = [donnee[0] for donnee in donnees].count)
-
             for valeur, partition in partitions.items():
                 enfants[valeur] = self.construit_arbre_recur(partition,
-                                                             attributs_restants,avgClassPrevious)
-            return NoeudDeDecision(attribut, donnees, enfants)
+                                                             attributs_restants,
+                                                             predominant_class)
+
+            return NoeudDeDecision(attribut, donnees, str(predominant_class), enfants)
 
     def partitionne(self, donnees, attribut, valeurs):
         """ Partitionne les données sur les valeurs a_j de l'attribut A.
