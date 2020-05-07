@@ -53,6 +53,16 @@ class ResultValues():
         return donnees
 
     def only_class(self,rep):
+        """ Used to isolate the class ('sick' or 'not sick') from rep. rep is the\
+        output of the function NoeudDeDecision.classifie(self,donnee).
+
+        Args:
+            rep(string): justification of the classification
+        Returns:
+            sol(string): the classification
+
+        """
+
         str='Alors'
         sol = ''
         if str in rep:
@@ -64,7 +74,14 @@ class ResultValues():
         return sol
 
     def precision(self,donnees):
+        """ Compute the precision of the tree
 
+        Args:
+            donnees: import a .csv file using importData which returns donnees
+        Returns:
+            precision(float): the computed precision
+
+        """
         trueValues=[]
         for donnee in donnees:
             if donnee[0]=='sick':
@@ -92,17 +109,29 @@ class ResultValues():
         return precision
 
     def cure(self,donnees):
+        """ Search for the cures if 'sick'. Print the justification before the
+        cure print the cure that is needed and print the justification after the
+        cure. If 'not sick' prints "No treatment needed" if no cure founded prints
+        "No treatment founded"
+
+        Args:
+            donnees: donnees: import a .csv file using importData which returns donnees
+
+        """
         found2=False
         before=[]
         treatments=[]
+        rep=[]
+        rep_sol=[]
 
         for donnee in donnees:
             found1=False
             if donnee[0]=='not sick':
                 print("No treatments needed")
             elif donnee[0]=='sick':
+                rep.append(self.arbre.classifie(donnee[1]))
                 attributs=list(donnee[1].keys())
-                #Checker si en changeant un seul attribut on peut guérir
+                #look if by changing only one value it is possible to found a cure
                 for i in range(len(attributs)):
                     cure1={}
                     before_cure1={}
@@ -116,6 +145,7 @@ class ResultValues():
                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                             #print(classe)
                             if classe=='not sick':
+                                rep_sol.append(self.arbre.classifie(donnee[1]))
                                 found1=True
                                 cure1[attributs[i]]=value
                                 treatments.append(cure1)
@@ -124,9 +154,8 @@ class ResultValues():
                                 break
                     if found1:
                         break
-                #Si on a pas trouvé de remède avec un seul attribut --> check avec\
-                # la combinaison de deux autres attributs. Mais trop de combinaison\
-                # sont essayées --> problème avec les break surement
+                #if no cure founded with only one attribut changing. Try combinations\
+                #of different attributs.
                 if found1==False:
                     found2=False
                     for i in range(len(attributs)):
@@ -145,6 +174,7 @@ class ResultValues():
                                             donnee[1][attributs[j]]=val
                                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                                             if classe=='not sick':
+                                                rep_sol.append(self.arbre.classifie(donnee[1]))
                                                 found2=True
                                                 cure2[attributs[i]]=value
                                                 cure2[attributs[j]]=val
@@ -160,14 +190,16 @@ class ResultValues():
                             if found2:
                                 break
 
-
-        if found1 or found2:
+        if len(treatments)!=0:
             for i in range(len(treatments)):
                 list_attributs=list(treatments[i].keys())
                 for j in range(len(list_attributs)):
                     i_str=str(i)
-                    print(i_str+': Cure: '+"{}".format(list_attributs[j])+": "+"{}-->{}".format
+                    print(rep[i])
+                    print('Cure: '+"{}".format(list_attributs[j])+": "+"{}-->{}".format
                         (before[i][list_attributs[j]],treatments[i][list_attributs[j]]))
+                    print(rep_sol[i])
+                    print('')
         else:
             print("No treatment founded")
 
