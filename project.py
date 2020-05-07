@@ -174,6 +174,7 @@ class ResultValues():
                                             donnee[1][attributs[j]]=val
                                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                                             if classe=='not sick':
+                                                rep_sol.append(self.arbre.classifie(donnee[1]))
                                                 found2=True
                                                 cure2[attributs[i]]=value
                                                 cure2[attributs[j]]=val
