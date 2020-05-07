@@ -53,6 +53,16 @@ class ResultValues():
         return donnees
 
     def only_class(self,rep):
+        """ Used to isolate the class ('sick' or 'not sick') from rep. rep is the\
+        output of the function NoeudDeDecision.classifie(self,donnee).
+
+        Args:
+            rep(string): justification of the classification
+        Returns:
+            sol(string): the classification
+
+        """
+
         str='Alors'
         sol = ''
         if str in rep:
@@ -64,7 +74,14 @@ class ResultValues():
         return sol
 
     def precision(self,donnees):
+        """ Compute the precision of the tree
 
+        Args:
+            donnees: import a .csv file using importData which returns donnees
+        Returns:
+            precision(float): the computed precision
+
+        """
         trueValues=[]
         for donnee in donnees:
             if donnee[0]=='sick':
@@ -92,6 +109,15 @@ class ResultValues():
         return precision
 
     def cure(self,donnees):
+        """ Search for the cures if 'sick'. Print the justification before the
+        cure print the cure that is needed and print the justification after the
+        cure. If 'not sick' prints "No treatment needed" if no cure founded prints
+        "No treatment founded"
+
+        Args:
+            donnees: donnees: import a .csv file using importData which returns donnees
+
+        """
         found2=False
         before=[]
         treatments=[]
@@ -105,7 +131,7 @@ class ResultValues():
             elif donnee[0]=='sick':
                 rep.append(self.arbre.classifie(donnee[1]))
                 attributs=list(donnee[1].keys())
-                #Checker si en changeant un seul attribut on peut guérir
+                #look if by changing only one value it is possible to found a cure
                 for i in range(len(attributs)):
                     cure1={}
                     before_cure1={}
@@ -128,9 +154,8 @@ class ResultValues():
                                 break
                     if found1:
                         break
-                #Si on a pas trouvé de remède avec un seul attribut --> check avec\
-                # la combinaison de deux autres attributs. Mais trop de combinaison\
-                # sont essayées --> problème avec les break surement
+                #if no cure founded with only one attribut changing. Try combinations\
+                #of different attributs.
                 if found1==False:
                     found2=False
                     for i in range(len(attributs)):
