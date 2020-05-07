@@ -95,12 +95,15 @@ class ResultValues():
         found2=False
         before=[]
         treatments=[]
+        rep=[]
+        rep_sol=[]
 
         for donnee in donnees:
             found1=False
             if donnee[0]=='not sick':
                 print("No treatments needed")
             elif donnee[0]=='sick':
+                rep.append(self.arbre.classifie(donnee[1]))
                 attributs=list(donnee[1].keys())
                 #Checker si en changeant un seul attribut on peut guérir
                 for i in range(len(attributs)):
@@ -116,6 +119,7 @@ class ResultValues():
                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                             #print(classe)
                             if classe=='not sick':
+                                rep_sol.append(self.arbre.classifie(donnee[1]))
                                 found1=True
                                 cure1[attributs[i]]=value
                                 treatments.append(cure1)
@@ -160,14 +164,16 @@ class ResultValues():
                             if found2:
                                 break
 
-
-        if found1 or found2:
+        if len(treatments)!=0:
             for i in range(len(treatments)):
                 list_attributs=list(treatments[i].keys())
                 for j in range(len(list_attributs)):
                     i_str=str(i)
-                    print(i_str+': Cure: '+"{}".format(list_attributs[j])+": "+"{}-->{}".format
+                    print(rep[i])
+                    print('Cure: '+"{}".format(list_attributs[j])+": "+"{}-->{}".format
                         (before[i][list_attributs[j]],treatments[i][list_attributs[j]]))
+                    print(rep_sol[i])
+                    print('')
         else:
             print("No treatment founded")
 
