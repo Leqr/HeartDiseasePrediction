@@ -236,7 +236,7 @@ class ResultValues():
 
         print()
 
-    def task3(self,printRules = True):
+    def task3(self, printRules=True):
         """ Performs task 3.
         """
         print('Generating rules from the tree (Task 3)...')
