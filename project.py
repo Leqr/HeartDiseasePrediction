@@ -13,16 +13,18 @@ class ResultValues():
         # Task 5
         self.arbre_advance = None
         self.attributs = None
+
         #Tasks are performed upon inililization
 
         # Task 1
-        self.task1(printTree = True)
+        self.task1(printTree = False)
         #Task 2
         self.task2(printPrecision = True)
         #Task3
-        self.task3(printRules = True)
+        self.task3(printRules = False,  printDiagnostic = True)
         #Task4
         self.task4()
+        #Task 5
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -216,21 +218,49 @@ class ResultValues():
                 newProp2.append((tree.attribut,value))
                 self.DFSgenerateRulesFromTree(child,newProp2)
 
+    def ruleAsString(self,rule):
+        """ Return the rule as the conjontion of conditions in a string.
+
+            :param donnee: a rule to return as a string
+
+            :return: Conjonction of conditions as a string
+
+        """
+        rep = 'If '
+        for t in rule[0]:
+            if t != rule[0][-1]:
+                rep += str(t[0]) + '=' +  str(t[1]) + ' ' +'AND' +' '
+            else:
+                rep += str(t[0]) + '=' + str(t[1]) + ' ' + '-->' + ' '+ rule[1]
+        return rep
+
 
     def explanationForDiagnostic(self,donnee):
-        """ Give an explanation of the diagnostic using the parameters of the data.
+        """ Give an explanation of the diagnostic using the parameters of one data point.
 
             :param donnee: a data to analyze
 
-            :return:
+            :return: 'Error' if no rule explains the data or an explanation if a rule is found
 
         """
+        #converts the attributes and values of the data in the same manner as it is stored in self.regles
+        dataAttributes = [(attribs,value) for attribs,value in donnee[1].items()]
 
+        #this functions uses the properties of sets so a conversion is needed
+        dataAttributesSet = set(dataAttributes)
+        found = False
 
-
-
-
-
+        #finds the attribute
+        for regle in self.regles:
+            regleSet = set(regle[0])
+            inter = dataAttributesSet.intersection(regleSet)
+            if inter == regleSet:
+                diagnosticRule = regle
+                found = True
+        if found == False:
+            return 'Error, no suitable diagnostic found'
+        if found == True:
+            return self.ruleAsString(diagnosticRule)
 
 
     def task1(self,printTree = True):
@@ -261,7 +291,7 @@ class ResultValues():
 
         print()
 
-    def task3(self, printRules=True):
+    def task3(self, printRules=True, printDiagnostic = True):
         """ Performs task 3.
         """
         print('Generating rules from the tree (Task 3)...')
@@ -274,12 +304,18 @@ class ResultValues():
                 print(i)
         print()
 
+        if printDiagnostic:
+
+            print('The diagnostic for this data is : ')
+            print(self.explanationForDiagnostic(self.importData('train_bin.csv')[26]))
+            print()
+
     def task4(self):
         """ Performs task 4.
         """
         print('Finding cures (Task 4)...')
 
-        donnees=self.importData("train_bin.csv")
+        donnees=self.importData("train_bin.csv")[25:35]
         self.cure(donnees)
 
         print()
