@@ -16,11 +16,11 @@ class ResultValues():
         #Tasks are performed upon inililization
 
         # Task 1
-        self.task1(printTree = False)
+        self.task1(printTree = True)
         #Task 2
         self.task2(printPrecision = True)
         #Task3
-        self.task3(printRules = False)
+        self.task3(printRules = True)
         #Task4
         self.task4()
 
@@ -43,9 +43,9 @@ class ResultValues():
         donnees = []
         for i in range(len(target)):
             if target.iloc[i] == 1 :
-                donnee = ['sick',{}]
+                donnee = ['0',{}]
             elif target.iloc[i] == 0 :
-                donnee = ['not sick',{}]
+                donnee = ['1',{}]
             for indexAttribut in range(len(data.iloc[i])-1):
                 donnee[1].update({data.columns[indexAttribut]:data.iloc[i,indexAttribut]})
             donnees.append(donnee)
@@ -53,7 +53,7 @@ class ResultValues():
         return donnees
 
     def only_class(self,rep):
-        """ Used to isolate the class ('sick' or 'not sick') from rep. rep is the\
+        """ Used to isolate the class ('0' or '1') from rep. rep is the\
         output of the function NoeudDeDecision.classifie(self,donnee).
 
         Args:
@@ -84,9 +84,9 @@ class ResultValues():
         """
         trueValues=[]
         for donnee in donnees:
-            if donnee[0]=='sick':
+            if donnee[0]=='0':
                 trueValues.append(1)
-            if donnee[0]=='not sick':
+            if donnee[0]=='1':
                 trueValues.append(0)
 
         predValues=[]
@@ -94,9 +94,9 @@ class ResultValues():
             classification = self.arbre.classifie(donnee[1])
             classe = self.only_class(classification)
             #print(classe)
-            if classe == 'sick':
+            if classe == '0':
                 predValues.append(1)
-            if classe == 'not sick':
+            if classe == '1':
                 predValues.append(0)
 
         count=0
@@ -109,9 +109,9 @@ class ResultValues():
         return precision
 
     def cure(self,donnees):
-        """ Search for the cures if 'sick'. Print the justification before the
+        """ Search for the cures if '0'. Print the justification before the
         cure print the cure that is needed and print the justification after the
-        cure. If 'not sick' prints "No treatment needed" if no cure founded prints
+        cure. If '1' prints "No treatment needed" if no cure founded prints
         "No treatment founded"
 
         Args:
@@ -126,9 +126,9 @@ class ResultValues():
 
         for donnee in donnees:
             found1=False
-            if donnee[0]=='not sick':
+            if donnee[0]=='0':
                 print("No treatments needed")
-            elif donnee[0]=='sick':
+            elif donnee[0]=='1':
                 rep.append(self.arbre.classifie(donnee[1]))
                 attributs=list(donnee[1].keys())
                 #look if by changing only one value it is possible to found a cure
@@ -144,7 +144,7 @@ class ResultValues():
                             donnee[1][attributs[i]]=value
                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                             #print(classe)
-                            if classe=='not sick':
+                            if classe=='1':
                                 rep_sol.append(self.arbre.classifie(donnee[1]))
                                 found1=True
                                 cure1[attributs[i]]=value
@@ -173,7 +173,7 @@ class ResultValues():
                                         for val in values_range2:
                                             donnee[1][attributs[j]]=val
                                             classe=self.only_class(self.arbre.classifie(donnee[1]))
-                                            if classe=='not sick':
+                                            if classe=='1':
                                                 rep_sol.append(self.arbre.classifie(donnee[1]))
                                                 found2=True
                                                 cure2[attributs[i]]=value
