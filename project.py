@@ -62,14 +62,7 @@ class ResultValues():
             sol(string): the classification
 
         """
-
-        str='Alors'
-        sol = ''
-        if str in rep:
-            start=rep.find(str)+6
-            sol=rep[start:]
-        else:
-            sol = 'Not a class'
+        sol=rep[-1]
 
         return sol
 
@@ -144,7 +137,7 @@ class ResultValues():
                             donnee[1][attributs[i]]=value
                             classe=self.only_class(self.arbre.classifie(donnee[1]))
                             #print(classe)
-                            if classe=='1':
+                            if classe=='0':
                                 rep_sol.append(self.arbre.classifie(donnee[1]))
                                 found1=True
                                 cure1[attributs[i]]=value
@@ -173,7 +166,7 @@ class ResultValues():
                                         for val in values_range2:
                                             donnee[1][attributs[j]]=val
                                             classe=self.only_class(self.arbre.classifie(donnee[1]))
-                                            if classe=='1':
+                                            if classe=='0':
                                                 rep_sol.append(self.arbre.classifie(donnee[1]))
                                                 found2=True
                                                 cure2[attributs[i]]=value
