@@ -11,7 +11,7 @@ class ID3:
         Moreover, the predominant class is also passed as a parameter to NoeudDeDecision().
     """
 
-    def construit_arbre(self, donnees, continuous = False):
+    def construit_arbre(self, donnees, continuous = False,accuracy_factor = 1):
         """ Construit un arbre de décision à partir des données d'apprentissage.
 
             :param list donnees: les données d'apprentissage\
@@ -43,11 +43,11 @@ class ID3:
                 predominant_class = c
         # print(predominant_class)
 
-        arbre = self.construit_arbre_recur(donnees, attributs, predominant_class,continuous)
+        arbre = self.construit_arbre_recur(donnees, attributs, predominant_class,continuous,accuracy_factor)
 
         return arbre, attributs
 
-    def construit_arbre_recur(self, donnees, attributs, predominant_class,continuous = False):
+    def construit_arbre_recur(self, donnees, attributs, predominant_class,continuous = False,accuracy_factor = 1):
         """ Construit rédurcivement un arbre de décision à partir
             des données d'apprentissage et d'un dictionnaire liant
             les attributs à la liste de leurs valeurs possibles.
@@ -99,7 +99,7 @@ class ID3:
                 for attribut,valeurs in attributs.items():
                     if len(valeurs) > 3:
                         stepVal = self.step(list(valeurs))
-                        pointNumber = (max(valeurs)-min(valeurs))/stepVal
+                        pointNumber = accuracy_factor*(max(valeurs)-min(valeurs))/stepVal
                         h_C_As_attrib = [(self.h_C_A_cont(donnees, attribut, split_valeur),
                                        (attribut,split_valeur)) for split_valeur in np.linspace(min(valeurs),max(valeurs),pointNumber)]
                         h_C_As_attribs.append(min(h_C_As_attrib, key=lambda h_a: h_a[0]))
@@ -124,7 +124,7 @@ class ID3:
                     val = valeur
                 enfants[val] = self.construit_arbre_recur(partition,
                                                              attributs_restants,
-                                                             predominant_class,continuous)
+                                                             predominant_class,continuous,accuracy_factor)
 
             return NoeudDeDecision(attribut, donnees, str(predominant_class), enfants)
 

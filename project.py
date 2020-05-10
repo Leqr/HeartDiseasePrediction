@@ -1,5 +1,7 @@
 import pandas as pd
 from id3 import ID3
+import numpy as np
+import matplotlib.pyplot as plt
 
 class ResultValues():
 
@@ -369,12 +371,42 @@ class ResultValues():
     def task5(self,printTree = True, printPrecision = True):
         """ Performs task 5.
         """
+
+        """
         print('Building the tree (Task 5)...')
         donnees = self.importData('train_continuous.csv')
+        precisions = []
+        for i in np.linspace(0.4,4,60):
+            id3 = ID3()
+            print(i)
+            self.arbre_advance = id3.construit_arbre(donnees,True,i)[0]
 
+            if printTree:
+                print('Decision tree :')
+                print(self.arbre_advance.__repr__(notEg = True))
+
+            #print()
+
+            precision = self.precision(self.importData("test_public_continuous.csv"),True)
+            if printPrecision:
+                print('Testing the tree...')
+                print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
+
+            #print()
+            precisions.append(precision)
+
+        plt.plot(np.linspace(0.4,4,60),precisions)
+        plt.xlabel('accuracy_factor')
+        plt.ylabel('Accuracy %')
+        plt.show()
+        """
+
+        print('Building the tree (Task 5)...')
+        donnees = self.importData('train_continuous.csv')
+        precisions = []
         id3 = ID3()
 
-        self.arbre_advance = id3.construit_arbre(donnees,True)[0]
+        self.arbre_advance = id3.construit_arbre(donnees,True,0.7)[0]
 
         if printTree:
             print('Decision tree :')
