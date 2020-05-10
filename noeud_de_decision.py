@@ -57,7 +57,6 @@ class NoeudDeDecision:
         else:
 
             valeur = donnee[self.attribut]
-
             #this part takes into account the case where an attribute value from the
             #test dataset doesn't exist in the training dataset.
             if valeur in self.enfants.keys():
@@ -70,7 +69,51 @@ class NoeudDeDecision:
 
         return rep
 
-    def repr_arbre(self, level=0):
+    def getSplitValue(self,key):
+        for i in range(len(key)):
+            if key[i] == ' ':
+                splitValue = key[i+1:]
+        return splitValue
+
+    def classifie_cont(self, donnee):
+        """
+         Classifie une donnée à l'aide de l'arbre de décision duquel le noeud\
+            courant est la racine.
+
+            :param donnee: la donnée à classifier.
+            :return: la classe de la donnée selon le noeud de décision courant.
+        """
+
+        rep = ''
+        if self.terminal():
+            rep += 'Alors {}'.format(self.classe())
+        else:
+
+            valeur = donnee[self.attribut]
+            #this part takes into account the case where an attribute value from the
+            #test dataset doesn't exist in the training dataset.
+            prefix_under = '< '
+            prefix_over = '>= '
+
+            key = 0
+            for k,v in self.enfants.items():
+                key = self.getSplitValue(k)
+
+
+            if valeur < float(key) :
+                enfant = self.enfants[prefix_under + str(key)]
+                rep += 'Si {} {}, '.format(self.attribut, prefix_under + str(key))
+                rep += enfant.classifie_cont(donnee)
+            elif valeur >= float(key):
+                enfant = self.enfants[prefix_over + str(key)]
+                rep += 'Si {} {}, '.format(self.attribut, prefix_over + str(key))
+                rep += enfant.classifie_cont(donnee)
+
+
+        return rep
+
+
+    def repr_arbre(self, level=0,notEg = False):
         """ Représentation sous forme de string de l'arbre de décision duquel\
             le noeud courant est la racine.
         """
@@ -94,8 +137,11 @@ class NoeudDeDecision:
         else:
             for valeur, enfant in self.enfants.items():
                 rep += '---'*level
-                rep += 'Si {} = {}: \n'.format(self.attribut, str(valeur).upper())
-                rep += enfant.repr_arbre(level+1)
+                if not notEg:
+                    rep += 'Si {} = {}: \n'.format(self.attribut, str(valeur).upper())
+                else:
+                    rep += 'Si {} {}: \n'.format(self.attribut, str(valeur).upper())
+                rep += enfant.repr_arbre(level+1,notEg)
 
         return rep
 
@@ -123,9 +169,9 @@ class NoeudDeDecision:
 
         return [endLevels,maxi]
 
-    def __repr__(self):
+    def __repr__(self,notEg = False):
         """ Représentation sous forme de string de l'arbre de décision duquel\
             le noeud courant est la racine.
         """
 
-        return str(self.repr_arbre(level=0))
+        return str(self.repr_arbre(level=0, notEg = notEg))

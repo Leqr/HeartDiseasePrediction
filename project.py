@@ -12,7 +12,6 @@ class ResultValues():
         self.regles = None
         # Task 5
         self.arbre_advance = None
-        self.attributs = None
 
         #Tasks are performed upon inililization
 
@@ -25,6 +24,8 @@ class ResultValues():
         #Task4
         self.task4()
         #Task 5
+        self.task5(printTree = False, printPrecision = True)
+
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -68,7 +69,7 @@ class ResultValues():
 
         return sol
 
-    def precision(self,donnees):
+    def precision(self,donnees,continuous = False):
         """ Compute the precision of the tree
 
         Args:
@@ -86,7 +87,11 @@ class ResultValues():
 
         predValues=[]
         for donnee in donnees:
-            classification = self.arbre.classifie(donnee[1])
+            if not continuous:
+                classification = self.arbre.classifie(donnee[1])
+            else :
+                classification = self.arbre_advance.classifie_cont(donnee[1])
+
             classe = self.only_class(classification)
             #print(classe)
             if classe == '0':
@@ -296,8 +301,11 @@ class ResultValues():
         donnees = self.importData('train_bin.csv')
 
         id3 = ID3()
-        self.arbre = id3.construit_arbre(donnees)[0]
-        self.attributs = id3.construit_arbre(donnees)[1]
+
+        s = id3.construit_arbre(donnees)
+        self.attributs = s[1]
+        self.arbre = s[0]
+
         if printTree:
             print('Decision tree :')
             print(self.arbre)
@@ -353,7 +361,30 @@ class ResultValues():
         """
         print('Finding cures (Task 4)...')
 
-        donnees=self.importData("train_bin.csv")[25:35]
+        donnees=self.importData("train_bin.csv")[25:28]
         self.cure(donnees)
+
+        print()
+
+    def task5(self,printTree = True, printPrecision = True):
+        """ Performs task 5.
+        """
+        print('Building the tree (Task 5)...')
+        donnees = self.importData('train_continuous.csv')
+
+        id3 = ID3()
+
+        self.arbre_advance = id3.construit_arbre(donnees,True)[0]
+
+        if printTree:
+            print('Decision tree :')
+            print(self.arbre_advance.__repr__(notEg = True))
+
+        print()
+
+        precision = self.precision(self.importData("test_public_continuous.csv"),True)
+        if printPrecision:
+            print('Testing the tree...')
+            print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
 
         print()
