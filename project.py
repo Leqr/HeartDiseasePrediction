@@ -234,6 +234,32 @@ class ResultValues():
                 rep += str(t[0]) + '=' + str(t[1]) + ' ' + '-->' + ' '+ rule[1]
         return rep
 
+    def classifyFromRule(self,donnee):
+        """ Give an explanation of the diagnostic using the parameters of one data point.
+
+            :param donnee: a data to analyze
+
+            :return: 'Error' if no rule explains the data or an explanation if a rule is found
+
+        """
+        #converts the attributes and values of the data in the same manner as it is stored in self.regles
+        dataAttributes = [(attribs,value) for attribs,value in donnee[1].items()]
+
+        #this functions uses the properties of sets so a conversion is needed
+        dataAttributesSet = set(dataAttributes)
+        found = False
+
+        #finds the attribute
+        for regle in self.regles:
+            regleSet = set(regle[0])
+            inter = dataAttributesSet.intersection(regleSet)
+            if inter == regleSet:
+                diagnosticRule = regle
+                found = True
+        if found == False:
+            return 'Error, no suitable diagnostic found'
+        if found == True:
+            return diagnosticRule[1]
 
     def explanationForDiagnostic(self,donnee):
         """ Give an explanation of the diagnostic using the parameters of one data point.
@@ -305,6 +331,18 @@ class ResultValues():
         print()
 
         if printDiagnostic:
+
+            countTrue = 0
+            count= 0
+
+            for i in self.importData('test_public_bin.csv'):
+                r = self.classifyFromRule(i)
+                count += 1
+                if r == i[0]:
+                    countTrue +=1
+            print('Accuracy with the rule searching algorithm :')
+            print("{:5.2f}".format((countTrue/count)*100)+'%')
+
 
             print('The diagnostic for this data is : ')
             print(self.explanationForDiagnostic(self.importData('train_bin.csv')[26]))
