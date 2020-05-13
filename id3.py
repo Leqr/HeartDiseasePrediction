@@ -101,7 +101,7 @@ class ID3:
                         stepVal = self.step(list(valeurs))
                         pointNumber = accuracy_factor*(max(valeurs)-min(valeurs))/stepVal
                         h_C_As_attrib = [(self.h_C_A_cont(donnees, attribut, split_valeur),
-                                       (attribut,split_valeur)) for split_valeur in np.linspace(min(valeurs),max(valeurs),pointNumber)]
+                                       (attribut,split_valeur)) for split_valeur in np.linspace(min(valeurs),max(valeurs),int(pointNumber))]
                         h_C_As_attribs.append(min(h_C_As_attrib, key=lambda h_a: h_a[0]))
                     else:
                         h_C_As_attrib = [(self.h_C_A_cont(donnees, attribut, split_valeur),

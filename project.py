@@ -22,7 +22,7 @@ class ResultValues():
         #Task 2
         self.task2(printPrecision = True)
         #Task3
-        self.task3(printRules = False,  printDiagnostic = True)
+        self.task3(printRules = True,  printDiagnostic = True)
         #Task4
         self.task4()
         #Task 5
@@ -295,6 +295,13 @@ class ResultValues():
         if found == True:
             return self.ruleAsString(diagnosticRule)
 
+    def generateTrainingFacts(self,trainingData):
+        self.faits_initiaux = []
+        for donnee in trainingData:
+            faits = []
+            for key,value in donnee[1].items():
+                faits.append((key,value))
+            self.faits_initiaux.append(faits)
 
     def task1(self,printTree = True):
         """ Performs task 1.
@@ -332,8 +339,14 @@ class ResultValues():
         """
         print('Generating rules from the tree (Task 3)...')
 
+        donnees = self.importData('train_bin.csv')
+
         self.regles = []
         propositions = []
+
+        # generate self.faits_initiaux
+        self.generateTrainingFacts(donnees)
+        
         self.DFSgenerateRulesFromTree(self.arbre,propositions)
         if printRules:
             for i in self.regles:
