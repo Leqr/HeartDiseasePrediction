@@ -27,7 +27,17 @@ class ResultValues():
         self.task4()
         #Task 5
         self.task5(printTree = False, printPrecision = True)
-
+        
+        '''
+        print('Arbre')
+        print(self.arbre)
+        print('Faits')
+        print(self.faits_initiaux)
+        print('regles')
+        print(self.regles)
+        print('advance')
+        print(self.arbre_advance)
+        '''
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -346,7 +356,7 @@ class ResultValues():
 
         # generate self.faits_initiaux
         self.generateTrainingFacts(donnees)
-        
+
         self.DFSgenerateRulesFromTree(self.arbre,propositions)
         if printRules:
             for i in self.regles:

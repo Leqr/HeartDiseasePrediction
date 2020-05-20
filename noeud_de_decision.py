@@ -78,7 +78,7 @@ class NoeudDeDecision:
     def classifie_cont(self, donnee):
         """
          Classifie une donnée à l'aide de l'arbre de décision duquel le noeud\
-            courant est la racine.
+            courant est la racine. Version pour les données de départ continues.
 
             :param donnee: la donnée à classifier.
             :return: la classe de la donnée selon le noeud de décision courant.

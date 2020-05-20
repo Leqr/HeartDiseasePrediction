@@ -9,13 +9,17 @@ class ID3:
         This is an updated version from the one in the book (Intelligence Artificielle par la pratique).
         Specifically, in construit_arbre_recur(), if donnees == [] (line 70), it returns a terminal node with the predominant class of the dataset -- as computed in construit_arbre() -- instead of returning None.
         Moreover, the predominant class is also passed as a parameter to NoeudDeDecision().
+        This class can also take into account continuous attribute values.
     """
 
     def construit_arbre(self, donnees, continuous = False,accuracy_factor = 1):
         """ Construit un arbre de décision à partir des données d'apprentissage.
 
             :param list donnees: les données d'apprentissage\
-            ``[classe, {attribut -> valeur}, ...]``.
+            ``[classe, {attribut -> valeur}, ...]``
+            :param continuous: Boolean permettant l'utilisation de donnée continues
+            :param accuracy_factor: Facteur de précision pour la discrétisation des données continues
+
             :return: une instance de NoeudDeDecision correspondant à la racine de\
             l'arbre de décision.
         """
@@ -56,6 +60,9 @@ class ID3:
             ``[classe, {attribut -> valeur}, ...]``.
             :param attributs: un dictionnaire qui associe chaque\
             attribut A à son domaine de valeurs a_j.
+            :param continuous: Boolean permettant l'utilisation de donnée continues
+            :param accuracy_factor: Facteur de précision pour la discrétisation des données continues
+
             :return: une instance de NoeudDeDecision correspondant à la racine de\
             l'arbre de décision.
         """
@@ -95,6 +102,7 @@ class ID3:
                 partitions = self.partitionne(donnees, attribut, attributs[attribut])
 
             if continuous:
+                #manages the discretization of the continuous data, tries different steps to chose the best.
                 h_C_As_attribs = []
                 for attribut,valeurs in attributs.items():
                     if len(valeurs) > 3:
@@ -129,6 +137,12 @@ class ID3:
             return NoeudDeDecision(attribut, donnees, str(predominant_class), enfants)
 
     def step(self,valeurs):
+        """ Determine la différence moyenne entre les valeur consecutives.
+
+            :param list valeurs: les données pour le calcul du step.
+
+            :return: Valeur moyenne du step.
+        """
         meanStep = 0
         valeurs.sort()
         for i in range(len(valeurs)-1):
@@ -250,14 +264,13 @@ class ID3:
         return sum([p_aj * h_c_aj for p_aj, h_c_aj in zip(p_ajs, h_c_ajs)])
 
     def partitionne_cont(self, donnees, attribut, split):
-        """ Partitionne les données sur les valeurs a_j de l'attribut A.
+        """ Partitionne les données sur les valeurs binaires de l'attribut A.
 
             :param list donnees: les données à partitioner.
             :param attribut: l'attribut A de partitionnement.
-            :param list valeurs: les valeurs a_j de l'attribut A.
-            :return: un dictionnaire qui associe à chaque valeur a_j de\
-            l'attribut A une liste l_j contenant les données pour lesquelles A\
-            vaut a_j.
+            :param list split: La valeurs de séparation de la branche de l'abre pour l'attribut.
+
+            :return: un dictionnaire qui associe les opérateurs < et >= au données plus petite et plus grandes que split.
         """
         partitions = {'<': [] , '>=' : []}
 
@@ -274,7 +287,9 @@ class ID3:
 
             :param list donnees: les données d'apprentissage.
             :param attribut: l'attribut A.
-            :param valeur: la valeur a_j de l'attribut A.
+            :param valeur: la valeur de split.
+            :param comparator: l'opérateur logique de comparaison à utiliser.
+
             :return: p(a_j)
         """
         # Nombre de données.
@@ -300,8 +315,10 @@ class ID3:
 
             :param list donnees: les données d'apprentissage.
             :param attribut: l'attribut A.
-            :param valeur: la valeur a_j de l'attribut A.
+            :param valeur: la valeur de split.
             :param classe: la valeur c_i de la classe C.
+            :param comparator: l'opérateur logique de comparaison à utiliser.
+
             :return: p(c_i | a_j)
         """
         # Nombre d'occurrences de la valeur a_j parmi les données.
@@ -324,11 +341,13 @@ class ID3:
 
     def h_C_aj_cont(self, donnees, attribut, valeur,comparator):
         """ H(C|a_j) - l'entropie de la classe parmi les données pour lesquelles\
-            l'attribut A vaut a_j.
+            l'attribut A est < ou >= que la valeur de split.
 
             :param list donnees: les données d'apprentissage.
             :param attribut: l'attribut A.
-            :param valeur: la valeur a_j de l'attribut A.
+            :param valeur: la valeur de split.
+            :param comparator: l'opérateur logique de comparaison à utiliser.
+
             :return: H(C|a_j)
         """
         # Les classes attestées dans les exemples.
@@ -345,11 +364,11 @@ class ID3:
 
     def h_C_A_cont(self, donnees, attribut, valeur):
         """ H(C|A) - l'entropie de la classe après avoir choisi de partitionner\
-            les données suivant les valeurs de l'attribut A.
+            les données suivant < ou >= de l'attribut A.
 
             :param list donnees: les données d'apprentissage.
             :param attribut: l'attribut A.
-            :param list valeurs: les valeurs a_j de l'attribut A.
+            :param valeur: la valeur de split.
             :return: H(C|A)
         """
         # Calcule P(a_j) pour < split et > split.
