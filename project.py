@@ -27,7 +27,7 @@ class ResultValues():
         self.task4()
         #Task 5
         self.task5(printTree = False, printPrecision = True)
-         
+
         '''
         print('Arbre')
         print(self.arbre)
@@ -391,7 +391,7 @@ class ResultValues():
         """
         print('Finding cures (Task 4)...')
 
-        donnees=self.importData("train_bin.csv")[25:28]
+        donnees=self.importData("train_bin.csv")[28:32]
         self.cure(donnees)
 
         print()
