@@ -27,7 +27,7 @@ class ResultValues():
         self.task4()
         #Task 5
         self.task5(printTree = False, printPrecision = True)
-        
+         
         '''
         print('Arbre')
         print(self.arbre)
@@ -58,9 +58,9 @@ class ResultValues():
         donnees = []
         for i in range(len(target)):
             if target.iloc[i] == 1 :
-                donnee = ['0',{}]
-            elif target.iloc[i] == 0 :
                 donnee = ['1',{}]
+            elif target.iloc[i] == 0 :
+                donnee = ['0',{}]
             for indexAttribut in range(len(data.iloc[i])-1):
                 donnee[1].update({data.columns[indexAttribut]:data.iloc[i,indexAttribut]})
             donnees.append(donnee)
@@ -93,9 +93,9 @@ class ResultValues():
         trueValues=[]
         for donnee in donnees:
             if donnee[0]=='0':
-                trueValues.append(1)
-            if donnee[0]=='1':
                 trueValues.append(0)
+            if donnee[0]=='1':
+                trueValues.append(1)
 
         predValues=[]
         for donnee in donnees:
@@ -107,15 +107,20 @@ class ResultValues():
             classe = self.only_class(classification)
             #print(classe)
             if classe == '0':
-                predValues.append(1)
-            if classe == '1':
                 predValues.append(0)
+            if classe == '1':
+                predValues.append(1)
 
         count=0
+        countSick = 0
         for i in range(len(trueValues)):
             if trueValues[i]==predValues[i]:
                 count+=1
+            if trueValues[i] == 0:
+                countSick += 1
 
+        #calculate accuracy thta we would get by just estimating the bernouilli probability for 0 and 1 and the sampling
+        #from that estimated distribution to compare with what we get for our
 
         precision = (count/len(trueValues))*100
         return precision
@@ -340,7 +345,7 @@ class ResultValues():
         print('Testing the tree (Task 2)...')
         precision = self.precision(self.importData("test_public_bin.csv"))
         if printPrecision:
-            print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
+            print('Accuracy of the tree classification = ' + "{:5.2f}".format(precision) + '%')
 
         print()
 
@@ -403,27 +408,21 @@ class ResultValues():
             id3 = ID3()
             print(i)
             self.arbre_advance = id3.construit_arbre(donnees,True,i)[0]
-
             if printTree:
                 print('Decision tree :')
                 print(self.arbre_advance.__repr__(notEg = True))
-
             #print()
-
             precision = self.precision(self.importData("test_public_continuous.csv"),True)
             if printPrecision:
                 print('Testing the tree...')
                 print('Accuracy = ' + "{:5.2f}".format(precision) + '%')
-
             #print()
             precisions.append(precision)
-
         plt.plot(np.linspace(0.4,4,60),precisions)
         plt.xlabel('accuracy_factor')
         plt.ylabel('Accuracy %')
         plt.show()
         """
-
         print('Building the tree (Task 5)...')
         donnees = self.importData('train_continuous.csv')
         precisions = []
