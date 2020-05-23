@@ -28,16 +28,16 @@ class ResultValues():
         #Task 5
         self.task5(printTree = False, printPrecision = True)
 
-        '''
+
         print('Arbre')
         print(self.arbre)
         print('Faits')
         print(self.faits_initiaux)
-        print('regles')
+        print('Regles')
         print(self.regles)
-        print('advance')
+        print('Arbre Advance')
         print(self.arbre_advance)
-        '''
+        
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -68,6 +68,7 @@ class ResultValues():
         return donnees
 
     def only_class(self,rep):
+
         """ Used to isolate the class ('0' or '1') from rep. rep is the\
         output of the function NoeudDeDecision.classifie(self,donnee).
 
@@ -77,11 +78,13 @@ class ResultValues():
             sol(string): the classification
 
         """
+
         sol=rep[-1]
 
         return sol
 
     def precision(self,donnees,continuous = False):
+
         """ Compute the precision of the tree
 
         Args:
@@ -90,6 +93,7 @@ class ResultValues():
             precision(float): the computed precision
 
         """
+
         trueValues=[]
         for donnee in donnees:
             if donnee[0]=='0':
@@ -126,6 +130,7 @@ class ResultValues():
         return precision
 
     def cure(self,donnees):
+
         """ Search for the cures if '0'. Print the justification before the
         cure print the cure that is needed and print the justification after the
         cure. If '1' prints "No treatment needed" if no cure founded prints
@@ -135,6 +140,7 @@ class ResultValues():
             donnees: donnees: import a .csv file using importData which returns donnees
 
         """
+
         found2=False
         before=[]
         treatments=[]
@@ -228,6 +234,7 @@ class ResultValues():
             :param propositions: useful for the recursive algorithm
 
         """
+
         #the rules will have the following form
         # rule = [[[(att, value),...,(att, value)],res 1],...,[[(att, value),...,(att, value)],res m]]
         for value, child in tree.enfants.items():
@@ -241,6 +248,7 @@ class ResultValues():
                 self.DFSgenerateRulesFromTree(child,newProp2)
 
     def ruleAsString(self,rule):
+
         """ Return the rule as the conjontion of conditions in a string.
 
             :param donnee: a rule to return as a string
@@ -248,6 +256,7 @@ class ResultValues():
             :return: Conjonction of conditions as a string
 
         """
+
         rep = 'If '
         for t in rule[0]:
             if t != rule[0][-1]:
@@ -257,6 +266,7 @@ class ResultValues():
         return rep
 
     def classifyFromRule(self,donnee):
+
         """ Give an explanation of the diagnostic using the parameters of one data point.
 
             :param donnee: a data to analyze
@@ -264,6 +274,7 @@ class ResultValues():
             :return: 'Error' if no rule explains the data or an explanation if a rule is found
 
         """
+
         #converts the attributes and values of the data in the same manner as it is stored in self.regles
         dataAttributes = [(attribs,value) for attribs,value in donnee[1].items()]
 
@@ -284,6 +295,7 @@ class ResultValues():
             return diagnosticRule[1]
 
     def explanationForDiagnostic(self,donnee):
+
         """ Give an explanation of the diagnostic using the parameters of one data point.
 
             :param donnee: a data to analyze
@@ -291,6 +303,7 @@ class ResultValues():
             :return: 'Error' if no rule explains the data or an explanation if a rule is found
 
         """
+
         #converts the attributes and values of the data in the same manner as it is stored in self.regles
         dataAttributes = [(attribs,value) for attribs,value in donnee[1].items()]
 
@@ -311,6 +324,12 @@ class ResultValues():
             return self.ruleAsString(diagnosticRule)
 
     def generateTrainingFacts(self,trainingData):
+
+        """ Create a list of initial facts for each training data.
+
+            :param trainingData: a data to analyze
+
+        """
         self.faits_initiaux = []
         for donnee in trainingData:
             faits = []
@@ -319,8 +338,10 @@ class ResultValues():
             self.faits_initiaux.append(faits)
 
     def task1(self,printTree = True):
+
         """ Performs task 1.
         """
+
         print('Building the tree (Task 1)...')
         donnees = self.importData('train_bin.csv')
 
@@ -340,8 +361,10 @@ class ResultValues():
         print()
 
     def task2(self,printPrecision = True) :
+
         """ Performs task 2.
         """
+
         print('Testing the tree (Task 2)...')
         precision = self.precision(self.importData("test_public_bin.csv"))
         if printPrecision:
@@ -350,8 +373,10 @@ class ResultValues():
         print()
 
     def task3(self, printRules=True, printDiagnostic = True):
+
         """ Performs task 3.
         """
+
         print('Generating rules from the tree (Task 3)...')
 
         donnees = self.importData('train_bin.csv')
@@ -387,8 +412,10 @@ class ResultValues():
             print()
 
     def task4(self):
+
         """ Performs task 4.
         """
+
         print('Finding cures (Task 4)...')
 
         donnees=self.importData("train_bin.csv")[28:32]
@@ -397,9 +424,11 @@ class ResultValues():
         print()
 
     def task5(self,printTree = True, printPrecision = True):
+
         """ Performs task 5.
         """
-
+        #this part can create multiple replicates if the tree construction
+        #in order to create an accuracy plot
         """
         print('Building the tree (Task 5)...')
         donnees = self.importData('train_continuous.csv')
@@ -423,6 +452,7 @@ class ResultValues():
         plt.ylabel('Accuracy %')
         plt.show()
         """
+
         print('Building the tree (Task 5)...')
         donnees = self.importData('train_continuous.csv')
         precisions = []

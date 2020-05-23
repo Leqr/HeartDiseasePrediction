@@ -132,7 +132,9 @@ class NoeudDeDecision:
             rep += '---'*level
             rep += 'Alors {}\n'.format(self.classe().upper())
             rep += '---'*level
-            rep += 'Décision basée sur la classe la plus représentée dans le noeud précédent.\n'
+            rep += 'Décision basée sur les données:\n'
+            rep += '---'*level
+            rep += '{}' + '\n'
 
         else:
             for valeur, enfant in self.enfants.items():
