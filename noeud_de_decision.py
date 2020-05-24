@@ -157,19 +157,25 @@ class NoeudDeDecision:
         if self.terminal() or self.undefined():
             endLevels.append(level)
             maxi = level
+            maxic = 0
         else :
             maxs = []
-
+            maxsc = []
             for valeur, enfant in self.enfants.items():
-                endLevels,maxi = enfant.getDepth(level+1,endLevels)
+                endLevels,maxi,maxic = enfant.getDepth(level+1,endLevels)
                 maxs.append(maxi)
+                if enfant.enfants is not None:
+                    maxsc.append(len(enfant.enfants))
+                else:
+                    maxsc.append(0)
             maxi = max(maxs)
+            maxic = max(maxsc)
 
         if level == 0:
             meanLevel = sum(endLevels)/len(endLevels)
-            return [meanLevel,maxi]
+            return [meanLevel,maxi,maxic]
 
-        return [endLevels,maxi]
+        return [endLevels,maxi,maxic]
 
     def __repr__(self,notEg = False):
         """ Représentation sous forme de string de l'arbre de décision duquel\

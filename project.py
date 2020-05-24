@@ -28,7 +28,7 @@ class ResultValues():
         #Task 5
         self.task5(printTree = False, printPrecision = True)
 
-
+        '''
         print('Arbre')
         print(self.arbre)
         print('Faits')
@@ -37,7 +37,7 @@ class ResultValues():
         print(self.regles)
         print('Arbre Advance')
         print(self.arbre_advance)
-        
+        '''
 
     def get_results(self):
         return [self.arbre, self.faits_initiaux, self.regles, self.arbre_advance]
@@ -358,6 +358,8 @@ class ResultValues():
         depthData = self.arbre.getDepth()
         print('Average Depth : ' + "{:5.2f}".format(depthData[0]))
         print('Maximum Depth : ' + "{:5.2f}".format(depthData[1]))
+        print('Maximum Number of Children : ' + "{:5.2f}".format(depthData[2]))
+
         print()
 
     def task2(self,printPrecision = True) :

@@ -46,7 +46,6 @@ class ID3:
                 predominant_class_counter = [row[0] for row in donnees].count(c)
                 predominant_class = c
         # print(predominant_class)
-
         arbre = self.construit_arbre_recur(donnees, attributs, predominant_class,continuous,accuracy_factor)
 
         return arbre, attributs
